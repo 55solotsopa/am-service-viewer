@@ -1,64 +1,77 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tablet Swipe Pages</title>
-    <style>
-        html, body {
-            margin: 0;
-            padding: 0;
-            overflow: hidden;
-            height: 100%;
-            width: 100%;
-        }
-        .wrapper {
-            display: flex;
-            width: 300vw; /* 3 pages */
-            height: 100vh;
-            transition: transform 0.4s ease-in-out;
-        }
-        iframe {
-            width: 100vw;
-            height: 100vh;
-            border: none;
-            flex-shrink: 0;
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Tablet Swipe Pages</title>
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+      height: 100%;
+      width: 100%;
+    }
+    .wrapper {
+      display: flex;
+      width: 300vw;
+      height: 100vh;
+      transition: transform 0.4s ease-in-out;
+    }
+    iframe {
+      width: 100vw;
+      height: 100vh;
+      border: none;
+      flex-shrink: 0;
+    }
+    #touch-layer {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      z-index: 10;
+    }
+  </style>
 </head>
-<body ontouchstart="handleTouchStart(event)" ontouchmove="handleTouchMove(event)">
-    <div id="wrapper" class="wrapper">
-        <iframe src="https://docs.google.com/spreadsheets/d/e/2PACX-1vQK0HyLIxp4KQKdYdZj7LPo38OKeQG2sZ56SzJhahNGiQDMK3XlKpCxXdnUNyieD3m5GEebEfBWmHGs/pubhtml?gid=1046168270&single=true"></iframe>
+<body>
+  <div id="wrapper" class="wrapper">
+    <iframe src="https://docs.google.com/spreadsheets/d/e/2PACX-1vQK0HyLIxp4KQKdYdZj7LPo38OKeQG2sZ56SzJhahNGiQDMK3XlKpCxXdnUNyieD3m5GEebEfBWmHGs/pubhtml?gid=1046168270&single=true"></iframe>
+    <iframe src="https://docs.google.com/spreadsheets/d/e/2PACX-1vQK0HyLIxp4KQKdYdZj7LPo38OKeQG2sZ56SzJhahNGiQDMK3XlKpCxXdnUNyieD3m5GEebEfBWmHGs/pubhtml?gid=1343647753&single=true"></iframe>
+    <iframe src="https://secured.sirvoy.com/calendar"></iframe>
+  </div>
 
-        <iframe src="https://docs.google.com/spreadsheets/d/e/2PACX-1vQK0HyLIxp4KQKdYdZj7LPo38OKeQG2sZ56SzJhahNGiQDMK3XlKpCxXdnUNyieD3m5GEebEfBWmHGs/pubhtml?gid=1343647753&single=true"></iframe>
+  <div id="touch-layer"></div>
 
-        <iframe src="https://secured.sirvoy.com/calendar"></iframe>
-    </div>
+  <script>
+    let xStart = null;
+    let current = 0;
+    const wrapper = document.getElementById("wrapper");
+    const maxSlides = 2;
+    const touchLayer = document.getElementById("touch-layer");
 
-    <script>
-        let xStart = null;
-        let current = 0;
-        const wrapper = document.getElementById("wrapper");
-        const maxSlides = 2;
+    touchLayer.addEventListener("touchstart", handleTouchStart, { passive: true });
+    touchLayer.addEventListener("touchmove", handleTouchMove, { passive: true });
 
-        function handleTouchStart(evt) {
-            xStart = evt.touches[0].clientX;
+    function handleTouchStart(evt) {
+      xStart = evt.touches[0].clientX;
+    }
+
+    function handleTouchMove(evt) {
+      if (!xStart) return;
+      let xDiff = xStart - evt.touches[0].clientX;
+
+      if (Math.abs(xDiff) > 50) {
+        if (xDiff > 0 && current < maxSlides) {
+          current++;
+        } else if (xDiff < 0 && current > 0) {
+          current--;
         }
 
-        function handleTouchMove(evt) {
-            if (!xStart) return;
-            let xDiff = xStart - evt.touches[0].clientX;
-
-            if (Math.abs(xDiff) > 50) {
-                if (xDiff > 0 && current < maxSlides) {
-                    current++;
-                } else if (xDiff < 0 && current > 0) {
-                    current--;
-                }
-                wrapper.style.transform = `translateX(-${current * 100}vw)`;
-                xStart = null;
-            }
-        }
-    </script>
+        wrapper.style.transform = `translateX(-${current * 100}vw)`;
+        xStart = null;
+      }
+    }
+  </script>
 </body>
 </html>
