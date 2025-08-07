@@ -5,12 +5,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Tablet Swipe Pages</title>
   <link rel="stylesheet" href="style.css">
+  <meta http-equiv="cache-control" content="public, max-age=3600">
 </head>
 <body>
   <div id="wrapper" class="wrapper">
-    <iframe src="https://docs.google.com/spreadsheets/d/e/2PACX-1vQK0HyLIxp4KQKdYdZj7LPo38OKeQG2sZ56SzJhahNGiQDMK3XlKpCxXdnUNyieD3m5GEebEfBWmHGs/pubhtml?gid=1046168270&single=true"></iframe>
+    <iframe src="https://docs.google.com/spreadsheets/d/e/2PACX-1vQK0HyLIxp4KQKdYdZj7LPo38OKeQG2sZ56SzJhahNGiQDMK3XlKpCxXdnUNyieD3m5GEebEfBWmHGs/pubhtml?gid=1046168270&single=true" loading="eager"></iframe>
     
-    <iframe src="https://docs.google.com/spreadsheets/d/e/2PACX-1vQK0HyLIxp4KQKdYdZj7LPo38OKeQG2sZ56SzJhahNGiQDMK3XlKpCxXdnUNyieD3m5GEebEfBWmHGs/pubhtml?gid=1343647753&single=true"></iframe>
+    <iframe src="https://docs.google.com/spreadsheets/d/e/2PACX-1vQK0HyLIxp4KQKdYdZj7LPo38OKeQG2sZ56SzJhahNGiQDMK3XlKpCxXdnUNyieD3m5GEebEfBWmHGs/pubhtml?gid=1343647753&single=true" loading="lazy"></iframe>
     
     <div class="redirect-slide" data-url="https://secured.sirvoy.com/calendar">
       <p style="text-align:center; font-size:2em; padding-top:40vh;">Redirecting to Sirvoy...</p>
@@ -48,6 +49,13 @@
         xStart = null;
         isDragging = false;
         redirectIfNeeded(current);
+      }
+    
+      // Lazy-load iframe when it becomes visible
+      const slide = slides[current];
+      const iframe = slide.tagName === "IFRAME" ? slide : slide.querySelector("iframe");
+      if (iframe && iframe.dataset.src && !iframe.src) {
+        iframe.src = iframe.dataset.src;
       }
     }
   
