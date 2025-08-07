@@ -13,51 +13,63 @@
     <iframe src="https://docs.google.com/spreadsheets/d/e/2PACX-1vQK0HyLIxp4KQKdYdZj7LPo38OKeQG2sZ56SzJhahNGiQDMK3XlKpCxXdnUNyieD3m5GEebEfBWmHGs/pubhtml?gid=1343647753&single=true"></iframe>
     
     <div class="redirect-slide" data-url="https://secured.sirvoy.com/calendar">
-        <p>Loading Sirvoy...</p>
+      <p style="text-align:center; font-size:2em; padding-top:40vh;">Redirecting to Sirvoy...</p>
     </div>
   </div>
 
   <div id="touch-layer"></div>
 
-  <script>
+ <script>
     let xStart = null;
+    let isDragging = false;
     let current = 0;
     const wrapper = document.getElementById("wrapper");
     const maxSlides = 2;
     const touchLayer = document.getElementById("touch-layer");
-
-    touchLayer.addEventListener("touchstart", handleTouchStart, { passive: true });
-    touchLayer.addEventListener("touchmove", handleTouchMove, { passive: true });
-
-    function handleTouchStart(evt) {
-      xStart = evt.touches[0].clientX;
+    const slides = document.querySelectorAll(".wrapper > *");
+  
+    function handleStart(x) {
+      xStart = x;
+      isDragging = true;
     }
-
-    function handleTouchMove(evt) {
-      if (!xStart) return;
-      let xDiff = xStart - evt.touches[0].clientX;
-
+  
+    function handleMove(x) {
+      if (!isDragging || xStart === null) return;
+      const xDiff = xStart - x;
+  
       if (Math.abs(xDiff) > 50) {
         if (xDiff > 0 && current < maxSlides) {
           current++;
         } else if (xDiff < 0 && current > 0) {
           current--;
         }
-
+  
         wrapper.style.transform = `translateX(-${current * 100}vw)`;
-        redirectIfNeeded(current);
         xStart = null;
+        isDragging = false;
+        redirectIfNeeded(current);
       }
     }
-    const slides = document.querySelectorAll(".wrapper > *");
-
+  
     function redirectIfNeeded(index) {
       const el = slides[index];
       if (el.classList.contains("redirect-slide")) {
         window.location.href = el.getAttribute("data-url");
       }
     }
-  </script>
+  
+    // Touch support
+    touchLayer.addEventListener("touchstart", (e) => handleStart(e.touches[0].clientX), { passive: true });
+    touchLayer.addEventListener("touchmove", (e) => handleMove(e.touches[0].clientX), { passive: true });
+  
+    // Mouse support
+    touchLayer.addEventListener("mousedown", (e) => handleStart(e.clientX));
+    touchLayer.addEventListener("mousemove", (e) => handleMove(e.clientX));
+    touchLayer.addEventListener("mouseup", () => {
+      isDragging = false;
+      xStart = null;
+    });
+</script>
   
 </body>
 </html>
