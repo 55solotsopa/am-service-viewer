@@ -12,7 +12,9 @@
     
     <iframe src="https://docs.google.com/spreadsheets/d/e/2PACX-1vQK0HyLIxp4KQKdYdZj7LPo38OKeQG2sZ56SzJhahNGiQDMK3XlKpCxXdnUNyieD3m5GEebEfBWmHGs/pubhtml?gid=1343647753&single=true"></iframe>
     
-    <a href="https://secured.sirvoy.com/calendar" target="_blank">Open Sirvoy</a>
+    <div class="redirect-slide" data-url="https://secured.sirvoy.com/calendar">
+        <p>Loading Sirvoy...</p>
+    </div>
   </div>
 
   <div id="touch-layer"></div>
@@ -43,9 +45,19 @@
         }
 
         wrapper.style.transform = `translateX(-${current * 100}vw)`;
+        redirectIfNeeded(current);
         xStart = null;
       }
     }
+    const slides = document.querySelectorAll(".wrapper > *");
+
+    function redirectIfNeeded(index) {
+      const el = slides[index];
+      if (el.classList.contains("redirect-slide")) {
+        window.location.href = el.getAttribute("data-url");
+      }
+    }
   </script>
+  
 </body>
 </html>
